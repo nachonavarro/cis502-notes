@@ -1,0 +1,149 @@
+%!TEX root = ../main.tex
+
+\section{Potentials For Upper Bounds}
+
+Recall the pancake flipping problem. To show the lower bound, we
+constructed a potential function $f$ and an input for which
+the potential was $n$. We also showed the potential at the
+solution is 0. We can also use potentials to prove upper bounds. To do
+this we need to show that every configuration has a potential bounded
+by $\Delta$, and when we reach the solution we have a configuration
+with potential $\delta$. We also need to show that every step of the
+algorithm reduces the potential \textbf{at least} $x$. If we can show
+this, we have shown that the algorithm has an upper bound of
+
+$$
+\frac{\Delta - \delta}{x}
+$$
+
+Consider once more the problem of finding the maximum of $n$ elements
+in the comparison tree model, and consider the potential function 
+$f$ = number of elements that haven't been beaten yet in a comparison.
+In other words, $f$ indicates the number of candidates for the
+maximum. Initially, $f = n$. When the algorithm concludes,
+$f = 1$. Furthermore, any good algorithm that compares only
+unbeaten elements will ensure that the potential decreases at least
+by 1. Using all of this, we have just shown an upper bound of $n$.
+
+
+\section{Adversary Method}
+
+One problem that we have with proving lower bounds is that different
+algorithms have different worst-cases. Thus we cannot set up one input
+and analyze all algorithms on this input and get a good lower bound.
+The two techniques we have discussed so far do not create bad inputs
+tailored to each algorithm to prove lower bounds. The adversary 
+technique does. How can we demonstrate a worst-case input for each of 
+a potentially infinite collection of algorithms?
+
+The trick is to design a strategy for the adversary that fields
+questions made by any algorithm and answers these questions in such a
+way that the progress of the algorithm to the solution is slowed down
+as much as possible. A strategy for an adversary defines an answer for
+each possible question in each possible "state", where a state is the set of questions that have been asked and answers that have been given to these questions. Thus it can be seen that the adversary is adaptively creating a worst-case input for the algorithm. One constraint is that the adversary should give a consistent set of answers, i.e., it should be possible to create an input for which all of the adversary’s answers are correct.
+
+\subsection{Edge Probe Model}
+
+Consider a graph $G = (V, E)$, and suppose we ask a question about the
+graph. In the edge probe model our
+primitive operation is to probe a pair of vertices $(i, j)$ to learn
+if there is an edge connecting $i$ and $j$ or not. Each probe costs 1
+step. Using the edge probe model, the adversary will answer the
+algorithm's probes, making sure to slow down the algorithm as much as
+possible. We can deduce that an immediate upper bound is 
+$\binom{n}{2}$ on the number of probes required (probing every vertex
+against every vertex). 
+
+\subsubsection{Is The Graph Connected?}
+
+In this problem, the adversary maintains the connected components of
+the graph created so far. For a query $(i, j)$, the adversary answers
+yes if and only if the connection between $i$ and $j$ is the last
+possible connection between the component of $i$ and the component of
+$j$.
+
+\subsection{Evasiveness}
+
+\begin{definition}
+    A graph property that requires any algorithm to query all pairs in
+    the edge probe model is called evasive.
+\end{definition}
+
+\begin{definition}
+    (Informal) A property of a graph is monotone if the addition of
+    more edges makes the property more true.
+\end{definition}
+
+This leads to the following conjecture.
+
+\begin{conjecture}
+    Every monotone graph property is evasive.
+\end{conjecture}
+
+We will now show informally that knowing if the graph is connected is
+an evasive property. We will need the following lemma.
+
+\begin{lemma}\label{lemma:lem1}
+    Fix the above adversary strategy. For any algorithm $A$, at any
+stage, let $C$ be a connected component that has been revealed by the
+probes that $A$ has made. Then $A$ must have probed every pair of
+distinct vertices in $C$.
+\end{lemma}
+
+\begin{theo}[]{theo:theo1}
+Under the adversary strategy, any correct
+algorithm must perform $\binom{n}{2}$ queries to determine if
+a graph is connected. 
+\end{theo}
+
+\begin{prf}[]{proof:theo1}
+(Informal) By induction. Suppose by induction we know $C_1$ and $C_2$
+are connected components by probing every pair of vertices in $C_1$
+and $C_2$ (using Lemma~\ref{lemma:lem1}). When we connect $C_1$ and
+$C_2$ to form $C = C_1 \cup C_2$, since we are using the adversary
+method, all vertices between $C_1$ and $C_2$ have been probed,
+maintaining the inductive invariant.
+\end{prf}
+
+\section{Divide and Conquer}
+
+This is a technique to solve problems. It consists of three steps.
+
+\begin{itemize}
+    \item Divide: divides the problem into roughly equal-sized pieces.
+    \item Conquer: solves each piece.
+    \item Combine: combines the solutions to the pieces.
+\end{itemize}
+
+The classic problem to solve using divide and conquer is mergesort.
+
+\subsection{Mergesort}
+
+\begin{itemize}
+    \item Divide: trivial, split the array into two subarrays.
+    \item Conquer: recurse.
+    \item Combine: this is the merge algorithm. Given sorted arrays
+    $A$ and $B$, this algorithm merges $A$ and $B$ to give a sorted
+    array $C$ (see 
+    \href{https://en.wikipedia.org/wiki/Merge_algorithm}{here} for
+    more info). The number of comparisons is $2n - 1$. What is the
+    lower bound for this algorithm? Using the adversary strategy, the
+    adversary will initially assume that $a_1 < b_1 < a_2 < b_2 ...$.
+    The algorithm will proceed to compare adjacent elements,
+    satisfying the adversary's plan. If at any point the algorithm
+    tries to shortcut by comparing non-adjacent elements, the
+    adversary can swap to slow down the algorithm. Therefore, the
+    lower bound for this algorithm is again the number of adjacent
+    comparisons which is $2n - 1$.
+\end{itemize}
+
+
+Let $T(n)$ be the number of comparisons performed by mergesort on
+an array of $n$ elements. We know $T(1) = 0$. Then for a general $n$
+we have that
+
+$$T(n) \leq 2T(\frac{n}{2}) + 2n$$
+
+
+
+

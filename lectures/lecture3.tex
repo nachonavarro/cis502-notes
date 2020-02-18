@@ -1,0 +1,141 @@
+%!TEX root = ../main.tex
+
+\section{Master Theorem}
+
+We now introduce the master theorem to solve recurrence relations.
+
+
+\begin{theo}[Master Theorem]{theo:theo2}
+Suppose $T(n) \leq aT(\frac{n}{b}) + f(n)$, where $a$ is the number of
+subproblems, each of size $n/b$.
+\begin{itemize}
+    \item If $\frac{a}{b^c} < 1$, then $T(n) = O(n^c)$
+    \item If $\frac{a}{b^c} = 1$, then $T(n) = O(\log_b(n) \cdot n^c)$
+    \item If $\frac{a}{b^c} > 1$, then $T(n) = O(n^{\log_b(a)})$
+\end{itemize}
+\end{theo}
+
+We can picture the Master Theorem using a recursion tree as in 
+Figure~\ref{fig:recursion-tree}. The key intuition is that the number
+of leaves is $n^{\log_b(a)}$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/recursion-tree.png}
+    \caption{Recursion tree to visualize the master theorem}
+    \label{fig:recursion-tree}
+\end{figure}
+
+Going back to mergesort, we have that
+
+$$
+T(n) \leq 2T(\frac{n}{2}) + kn
+$$
+
+In this case we have that $a = 2$, $b = 2$, and $c = 1$. Using
+the Master Theorem (Theorem~\ref{theo:theo2}), we learn
+$T(n) = O(n\log(n))$.
+
+\section{Quicksort}
+
+Another classic divide and conquer algorithm is quicksort. We have
+as input an array of $n$ integers, and as output we have the integers
+in sorted order. The idea is to pick an element in the array to act as
+the pivot element $x$. By comparing each other element with the pivot,
+we
+create a partition with $S = \{ y : y < x \}$ and $L = \{y : y > x \}$
+and recursively quicksort $S$ and $L$.
+
+A minor problem with quicksort is that it has worst-case running time
+of $O(n^2)$ (consider when the input is already sorted). That is why
+we sometimes consider the average-case complexity. We won't consider
+average case complexity in this course, as we are pessimistic people.
+
+There is a component of quicksort that is random (choosing the pivot).
+Therefore in general we need to talk about expected worst case
+behavior. In the algorithm, we pick the pivot uniformly at random from
+the elements to be sorted.
+
+Let $X$ be the total number of comparisons performed by quicksort.
+Since we have randomized the algorithm, $X$ is a random variable.
+Let $X_{ij}$ be the random variable that is 1 if the $i$-th smallest
+element and $j$-th smallest element are compared and 0 otherwise.
+How do we relate $X$ to $X_{ij}$? Well, we have that
+
+$$
+X = \sum_{i<j} X_{ij}
+$$
+
+Since we are studying the expected worst case behavior, we need to
+analyze the expectation of $X$. By linearity of expectation, we have
+that 
+
+\begin{align}
+E[X] &= E[\sum_{i<j} X_{ij}] \\
+     &= \sum_{i<j} E[X_{ij}] \\ 
+     &= \sum_{i<j} P(X_{ij} = 1) \\
+     &= \sum_{i<j} \frac{2}{j - i + 1} \\
+     &= 2 \sum_{d = 1}^{n - 1} \frac{n-d}{d+1}, \;\; \text{where $d =
+     j -
+     i$} \\
+     &= 2n\sum_{d = 1}^{n - 1}\frac{1}{d+1} - 2\sum_{d = 1}^{n -
+     1}\frac{d}{d+1} \\
+     &\leq 2n\sum_{d = 1}^{n - 1}\frac{1}{d+1} \\
+     &\implies O(n\log(n))
+\end{align}
+
+where (2.4) follows because there are $j - i + 1$ possibilities that
+will determine the
+values of $X_{ij}$, and only 2 compare $i$ with $j$ and (2.8) follows
+because (2.7) follows a harmonic series of order $\log(n)$.
+
+\section{Order Statistics}
+
+In order statistics we look at finding the $r$-th smallest element in
+an array. We immediately see a solution that takes $O(n\log(n))$ by
+first sorting the array and then choosing the $r$-th index. But can we
+do better?
+
+\begin{definition}
+    An element $x$ in an array $A$ has rank $k$ if $x$ is the $k$-th
+    smallest element in $A$.
+\end{definition}
+
+\subsection{Quick Select}
+
+As with quicksort, choose a random pivot and split the remaining
+elements into $S$ and $L$. If $|S| \geq r$, then we simply recurse on
+$S$. If $|S| = r - 1$, then the pivot is the output. Finally, if
+$|S| = k < r - 1$, then we recurse in $L$ but now we want to find
+the $k + 1$-th smallest element in $L$.
+
+We will not do the expected worst case analysis, but one can show that
+it is $O(n)$.
+
+\subsection{Deterministic Linear Time Selection}
+
+Consider $n$ elements.
+ 
+\begin{enumerate}
+    \item Create $n/5$ groups of 5 elements each.
+    \item Find the median of each group (this can be done in 6
+    comparisons). We now have performed $6n/5$ comparisons or equivalently $1.2n$.
+    \item Recursively find the median $m*$ of the medians, which takes
+    $T(5/n)$. We claim $m*$ has rank somewhere in the middle. More
+    precisely, $3n/10$ are smaller than $m*$ and $3n/10$ are bigger,
+    i.e., $0.3n \leq \text{rank}(m*) \leq 0.7n$.
+    \item Pivot using $m*$
+    \item Recurse with no more than $T(7n/10)$. The recurrence
+    relation for this algorithm is 
+    $$
+    T(n) \leq T(\frac{n}{5}) +T(\frac{7n}{10}) + 2.2n
+    $$
+    which has solution $T(n) \leq n$ for $n \geq 22$.
+\end{enumerate}
+
+
+\begin{remark}
+    Honestly, I recommend looking at
+\href{http://www.cs.ust.hk/mjg_lib/Classes/COMP3711H_Fall16/lectures/Deterministic_Selection_Notes.pdf}{this} resource for a better explanation.
+\end{remark}
+

@@ -1,0 +1,104 @@
+%!TEX root = ../main.tex
+
+\section{Vector Spaces Review}
+
+\begin{definition}
+    $V$ is vector space over $\mathbb{R}^n$ if
+    \begin{itemize}
+        \item For any $v_1, v_2 \in V \implies v_1 + v_2 \in V$.
+        \item For any $\alpha \in \mathbb{R}$ and $v \in V$ then
+        $\alpha v \in V$.
+    \end{itemize}
+\end{definition}
+
+\begin{definition}
+    Given a finite set of vectors $v_1, ..., v_k$, the span $S(v_1,
+    ..., v_k)$ is the set of all linearly combinations, i.e.
+    $$
+    S(v_1, ..., v_k) = \{\alpha_1v_1 + ... + \alpha_kv_k : \alpha_i
+    \in \mathbb{R}\}
+    $$
+\end{definition}
+
+\begin{definition}
+    A set of vectors $v_1, ..., v_k$ is linearly dependent if there
+    exist some non-trivial $\alpha_1, ..., \alpha_k$ with
+    $$
+    \alpha_1v_1 + ... + \alpha_kv_k = 0
+    $$
+\end{definition}
+
+\begin{lemma}
+    The span is a vector space.
+\end{lemma}
+
+\begin{definition}
+    A set of vectors is said to be linearly independent if they are
+    not linearly dependent.
+\end{definition}
+
+\begin{definition}
+    Let $v_1, ..., v_k$ be linearly independent and suppose their
+    span is $V$, then $v_1, ..., v_k$ form a basis for $V$.
+\end{definition}
+
+\begin{lemma}
+    If $v_1, ..., v_k$ is a basis for $V$ and $u_1, ..., u_k$ is
+    another basis for $V$, then $m = k$.
+\end{lemma}
+
+\begin{proof}
+    (Sketch). Suppose for a contradiction that $m > k$. Then we have
+    \begin{align*}
+        u_1 &= \alpha_{11}v_1 + ... + \alpha_{1k}v_k \\
+        u_2 &= \alpha_{21}v_1 + ... + \alpha_{2k}v_k \\
+        \vdots \\
+        u_m &= \alpha_{m1}v_1 + ... + \alpha_{mk}v_k
+    \end{align*}
+    We need to show that $u_1, ..., u_m$ is linearly dependent. To
+    show this, we need to find some non-trivial $x_1, ..., x_m$ such
+    that $\sum_i x_iu_i = 0$. So suppose $\sum_i x_iu_i = 0$.
+    Substitute each $u_i$ with the equations above. Collect terms, and
+    you'll get a system of equations with $k$ equations and $m$
+    unknowns, which leads to infinitely many solutions since $m > k$
+    by assumption. This leads to a contradiction.
+\end{proof}
+
+\section{More Greedy Algorithms}
+
+\subsection{Basis of Maximal Weight}
+
+Problem: Suppose you are Google and you assign a vector to each
+possible
+document. When a user searches for a term, you want to collect some
+vectors that are indicative of that search term. You also want to be
+diverse, e.g., if a user searches for "jaguar" you want to return
+some documents with cars and others with the animal. We could model
+this by returning vectors that are linearly independent.
+
+More abstractly, given vectors $v_1, ..., v_n$ with weights $w_1, ...,
+w_n$, we need to return a basis (note there can be many!) for the
+space spanned by these vectors of maximum total weight.
+
+\subsubsection{Greedy Approach}
+
+Sort the vectors by decreasing order of weights $v_1, ..., v_n$. Let
+$S$ be a set of vectors. For each vector $v_i$ in this order, if $S
+\cup \{v_i\}$ is linearly independent, then assign $S = S \cup 
+\{v_i\}$.
+
+\subsubsection{Correctness}
+
+By contradiction. Suppose the greedy approach returns vector $v_{i_1},
+..., v_{i_k}$,
+and suppose there is an optimal solution that returns vectors
+$v_{j_1}, ..., v_{j_k}$. Because the $v_j$ form a basis, $v_{i_1}$ can
+be expressed as a linear combination of the $v_j$'s. Indeed,
+
+$$
+v_{i_1} = \alpha_1v_{j_1} + ... + \alpha_1v_{j_k} 
+$$
+
+Notice some $\alpha_l \neq 0$. We can add $v_{i_1}$ into the set
+$v_{j_1}, ..., v_{j_k}$ and throw out $v_{j_l}$. We claim this is also
+a basis with weight at least as good.

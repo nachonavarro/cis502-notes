@@ -1,0 +1,176 @@
+%!TEX root = ../main.tex
+\section{Introduction}
+
+Algorithms are used to solve computational problems. But what is
+really a computational problem?
+
+\begin{definition}
+    A computational problem is a problem that takes any set of inputs and for each input it has a well defined output.
+\end{definition}
+
+An example of a computational problem that we're all familiar with is sorting. The input is a list of numbers and the output is a permutation of this list with the numbers in sorted orders.
+
+More generally, we can take as input a string of bits and deliver
+as an output a string of bits, so we can think of a computational
+problem as a function $f: \{0,1\}^* \to \{0,1\}^*$. Note that
+each computational problem has a specification of what a correct output
+looks like, and while we can write this specification using formal methods, we won't get caught up in formalities. $f$ specifies 
+what you want to compute, and an algorithm describes
+\textbf{how} you compute the function.
+
+\section{Running Times}
+
+Running times or number of steps for an algorithm will be a big theme
+in this course. For an algorithm that describes a computational problem
+$\pi$, we measure the running time as a function of the input's length.
+Running time will be a function $f(n)$. Note that this system allows
+us to cheat, as we can take an input of length $n$, add junk to it
+so that it's much larger in length, and then solve the problem in 
+reasonable time, making it look like our algorithm was very fast.
+To solve this, we will only allow reasonable input encodings.
+
+For instance, consider the problem of factoring $n$. A simple
+algorithm will go through the number 1 to $n$ to test if each
+number is a factor of $n$. This algorithm takes $O(n)$, right?
+Did we just solve cryptography? Not really, we cheated. We didn't
+specify how long $n$ is. In fact, the input string is around $\log(n)$,
+and the problem runs in exponential time. The takeaway is that we should be careful when we specify the input size.
+
+Another problem is that many inputs of size $n$ might take a different time. For instance, in sorting, the input size is fixed but different
+inputs might make the sorting algorithm take longer. What we will
+consider in this course is worst-case input (see Definition~\ref{def:worst-case}).
+
+\begin{definition}\label{def:worst-case}
+    An algorithm runs in time $f(n)$ in inputs of length $n$ if it runs in time $f(n)$ for \textbf{all} inputs of length $n$.
+\end{definition}
+
+We will also talk about upper and lower bounds in this course, which 
+we will also consider on the worst-case input.
+
+\begin{definition}
+    A problem $\pi$ has an upper bound of $O(f(n))$ if there 
+    \textbf{exists} an algorithm that solves all inputs of length
+    $n$ in time $f(n)$.
+\end{definition}
+
+\begin{definition}
+    A problem $\pi$ has a lower bound of $\Omega(g(n))$ if for all
+    algorithms there exists an input for which the algorithm
+    takes at least $g(n)$ time.
+\end{definition}
+
+You can see that proving a lower bound is much more difficult than
+proving an upper bound, as we have to reason about all possible algorithms.
+
+We will also consider the number of steps that an algorithm takes,
+but to do so we need to introduce a model of computation.
+
+\begin{definition}
+    A model of computation is a list of primitive operations or steps and the cost of each.
+\end{definition}
+
+\subsection{Comparison Tree Model}
+
+One example of a model of computation is the comparison tree model,
+in which the only primitive operation is a comparison, and it takes
+1 step. Suppose we want to find the maximum of $x_1, x_2$ and $x_3$ and we are working in the comparison tree model. In Figure~\ref{fig:tree-comparison-model} we can see the number of comparisons
+we would need to find the maximum.
+
+\begin{figure}[hpt]
+\centering
+    \begin{tikzpicture}[level distance=2cm,
+                        level 1/.style={sibling distance=6cm},
+                        level 2/.style={sibling distance=4.5cm},
+                        square/.style={regular polygon,regular polygon sides=4, draw=blue}]
+  \node[circle, draw=black] {$x_1 : x_2$}
+    child {node[circle, 
+                draw=black, 
+                label={[shift={(0, 0.25)}]$x_1 < x_2$}] {$x_2 : x_3$}
+      child {node[square,
+                  label={[shift={(0, 0.25)}]$x_2 < x_3$}] {$x_3$}}
+      child {node[square,
+                  label={[shift={(0, 0.25)}]$x_2 > x_3$}] {$x_2$}}
+    }
+    child {node[circle,
+                draw=black,
+                label={[shift={(0, 0.25)}]$x_1 > x_2$}] {$x_1 : x_3$}
+    child {node[square,
+                label={[shift={(0, 0.25)}]$x_3 > x_1$}] {$x_3$}}
+      child {node[square,
+                  label={[shift={(0, 0.25)}]$x_1 > x_1$}] {$x_1$}}
+    };
+    \end{tikzpicture}
+\caption{Finding the maximum under the tree comparison model, where
+each $x_i$ is distinct.}
+\label{fig:tree-comparison-model}
+\end{figure}
+
+In this scenario, the running time is equal to the height of the 
+comparison tree, and answers correspond to leaves. If you have
+a comparison tree algorithm that takes $h$ steps, how many answers
+can you have? Since it's a binary tree with height $h$, we have
+at most $2^h$ distinct answers.
+
+Consider now the task of proving a lower bound for sorting under
+the comparison tree model. The input are numbers $x_1, x_2, ..., x_n$,
+and the number of possible answers (brush up on combinatorics) is
+$n!$. This implies that the comparison tree must have $n!$ leaves.
+Using our reasoning above, the number of comparisons to sort
+is at least
+
+\begin{equation}\label{eqn:sterling}
+    \log_2(n!) = \Omega(n\log(n))
+\end{equation}
+
+How did we conclude Equation~\ref{eqn:sterling}? We use Sterling's
+approximation. We know $n! = n \cdot (n-1) \cdot ... \cdot 1$, and
+we also know $\log(n!) = \log(n \cdot (n-1) \cdot ... \cdot 1) =
+\sum_i^n\log(i)$ using logarithm properties. Now observe that
+for $i = \frac{n}{2}$, we have that $\log(\frac{n}{2}) = \log(n) - 1$,
+so for all numbers above $i$ we get at least $\log(n) - 1$.
+Therefore $\sum_i^n\log(i) \geq \frac{n}{2}(\log(n) - 1) = \Omega(n\log(n))$. We have just proved that any sorting algorithm under the comparison tree model must perform at least $n\log(n)$ steps. This technique is called the information theoretic lower bound.
+
+Consider another example under the comparison tree model, which is
+finding the median of $x_1, x_2, ..., x_n$. The number of possible
+answers is $n$ because any solution must be some $x_i$, so with
+the above reasoning is the lower bound $\log(n)$? Indeed, \emph{a}
+lower bound is $\log(n)$, but it's simply not that interesting.
+Can we do better? The key question to ask ourselves is when an
+algorithm knows that it has found the median. We know that half of the inputs must be smaller than the median, so the number of possible answers is the number of ways of choosing a median times the number of ways of choosing the half of inputs that are less than the median?
+There are $n$ possibilities for the median and 
+$\binom{n - 1}{\frac{n-1}{2}}$ possibilities for the set of elements
+which are smaller than the median. So the information theoretic
+lower bound is $\log(n\binom{n - 1}{\frac{n-1}{2}}) = \Omega(n)$.
+
+\subsection{Pancake Flipping Model}
+
+Consider a stack of pancakes, each having a burnt face and a regular face. In this model, there is only one operation which is to flip
+the stack of pancakes at position $i$ with a cost of 1 step.
+For instance, if we denote 0 for a regular facing pancake and 1
+for a burnt facing pancake, a possible stack would be
+$1011001$, and if we flip it on top of the fourth pancake, the
+new configuration will be $1011011$.
+
+With this model, we ask ourselves: what is the lower bound and
+the upper bound to take a stack of pancakes and have them all facing regularly? A simple algorithm goes from right to left, flipping
+the stack whenever there is a disagreement (prove it using
+induction). This takes at most $n$ steps, so we have an upper bound
+of $n$. As for the lower bound, we can also show that it is $n$.
+What we must do is find one input for which any algorithm, no matter how clever it is, must take $n$ steps to beautify the stack. To
+do this we introduce potential functions.
+
+\begin{definition}
+    A potential function $f$ is a function that needs to be changed from some initial value to some final value by an algorithm. If one can show that each step of the algorithm does not change the
+    potential too much, we can get a lower bound on the number of steps.
+\end{definition}
+
+For this problem, we choose the potential function $f = $ number of pairs of pancakes that are in disagreement. Any solution must
+have a potential of 0, and if we choose the input $01010...10101$
+of alternating pancakes, then the potential in the beginning is $n - 1$. Any algorithm can decrease the potential at most 1 by inserting
+the spatula between two pancakes in disagreement, so therefore
+a lower bound if $n$ steps.
+
+
+
+
+

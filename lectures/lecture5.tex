@@ -1,0 +1,153 @@
+%!TEX root = ../main.tex
+
+\section{More Convex Hull}
+
+Convex hulls have many domains. One such examples is in collision detection.
+
+\subsection{Quickhull}
+
+(Spent 5 minutes in class, not very important).
+The idea is to get the
+point with the minimum $x$-coordinate and the
+point
+with the maximum $x$-coordinate. Draw a line between these two points,
+and hopefully we have divided the points into two sets. Repeat this
+for subproblems and merge.
+
+\section{Graphs}
+
+Let $G = (V, E)$ where $V$ is a finite set of vertices and $E$ is a
+set of unordered pairs of vertices. There are two representations of
+graphs: adjacency lists and adjacency matrices. 
+
+\begin{definition}
+    An adjacency list is an array of size $|V|$ where entry $i$ is a
+    linked list consisting of the neighbors of vertex $i$.
+\end{definition}
+
+\begin{definition}
+    An adjacency matrix is a $|V| \times |V|$ matrix $M$ where
+    $M_{ij} = 1$ if $(i, j) \in E$ and 0 otherwise. Note the adjacency
+    matrix is symmetric for undirected graphs.
+\end{definition}
+
+The default representation of graphs is adjacency lists. Note we will
+not need to say every time that $G$ is undirected, this
+is
+implied.
+
+\begin{definition}
+    An edge $(u, v)$ has endpoints $u$ and $v$ or equivalently, is
+    incident on
+    vertices $u$ and $v$. We also say $u$ and $v$ are adjacent if $
+    (u, v) \in E$.
+\end{definition}
+
+\begin{definition}
+    The degree of a vertex $v$ is the number of edges incident on $v$,
+    denoted as $d(v) \in \mathbb{N}$.
+\end{definition}
+
+\begin{definition}
+    A path in a graph $G$ is a sequence of vertices $v_1, v_2, ...,
+    v_k$ such that $(v_i, v_{i+1}) \in E$ for all $i = 1 \to k - 1$.
+\end{definition}
+
+\begin{definition}
+    A path is simple if it does not repeat vertices.
+\end{definition}
+
+\begin{definition}
+    A (simple) cycle is a sequence of vertices $v_1, v_2, ...,
+    v_k, v_0$ such that $(v_i, v_{i+1}) \in E$ for all $i = 1 \to k -
+    1$ and $(v_k, v_1) \in E$ with the $v_i$ distinct except $v_1$.
+\end{definition}
+
+\begin{definition}
+    A graph is acyclic if there are no cycles.
+\end{definition}
+
+\begin{definition}
+    We say $u$ and $v$ are connected if there is a path between them.
+    $G$ is connected if for all $u, v \in V$ there is a path
+    connecting $u$ and $v$.
+\end{definition}
+
+\begin{definition}
+    The connected components of $G$ are the maximal subsets of $G$
+    that are pairwise connected.
+\end{definition}
+
+\begin{remark}
+    Connectedness is an equivalence relation.
+\end{remark}
+
+\subsection{Trees}
+
+\begin{definition}
+    A tree is a connected, acyclic graphs.
+\end{definition}
+
+\begin{definition}
+    (Inductive definition) A rooted tree is either
+    \begin{itemize}
+        \item A graph consisting of a single vertex $v$ with $v$ as
+        the root.
+        \item If $(T_1, r_1), (T_2, r_2), ..., (T_k, r_k)$ are rooted
+        trees, then the tr ee $(T, r)$ consisting of a new node $r$ as
+        the root and edges $(r, r_1), ..., (r, r_k)$ is a rooted tree.
+    \end{itemize}
+\end{definition}
+
+Typically problems in this domain can be solved with structural
+induction. An example of structural induction is the following:
+
+\begin{lemma}
+    Any tree of $n$ nodes has $n - 1$ edges.
+\end{lemma}
+
+\begin{proof}
+    We prove that any rooted tree on $n$ nodes has $n - 1$ edges which
+    implies our lemma. To prove this we first prove the base case.
+    Indeed, the statement holds for any single node rooted tree with
+    no edges. For the inductive step, we want to prove this for a
+    rooted tree built up from $(T_1, r_1), (T_2, r_2), ..., (T_k,
+    r_k)$. Assume the statement is true for all the trees $T_i$.
+    Tree $T_i$ has $n_i$ nodes. So then $T$ has $1 + \sum_i^k n_i$
+    nodes. By the inductive assumption, there are $n_i - 1$ edges in
+    $T_i$, so the total number of edges in $T$ is 
+    $k + \sum_i^k (n_i - 1) = \sum_i^k n_i$ which is one less than the
+    number of nodes, proving our lemma.
+\end{proof}
+
+\subsection{Traversals}
+
+How can we traverse a rooted tree? In other words, how can we visit
+all the nodes of a tree? We introd  uce post order traversal.
+
+\begin{algorithm}
+\caption{Post order traversal}
+\begin{algorithmic}
+\REQUIRE{$T$ is a tree with root $r$}
+\FOR{child $c$ of $r$}
+\STATE{Post order traversal of sub tree with root $c$}
+\ENDFOR
+\STATE{Visit $r$}
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
