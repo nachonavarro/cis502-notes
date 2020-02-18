@@ -1,6 +1,6 @@
 # Notes for CIS502 Analysis of Algorithms
 
-If you are as messy as me at writing handwritten notes, I hope this will help you.
+If you are as messy as me at writing handwritten notes, I hope [this](https://github.com/nachonavarro/cis502-notes/blob/master/main.pdf) will help you.
 
 ## Contribute 
 
