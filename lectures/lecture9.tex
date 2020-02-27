@@ -89,16 +89,50 @@ $S$ be a set of vectors. For each vector $v_i$ in this order, if $S
 
 \subsubsection{Correctness}
 
-By contradiction. Suppose the greedy approach returns vector $v_{i_1},
-..., v_{i_k}$,
-and suppose there is an optimal solution that returns vectors
-$v_{j_1}, ..., v_{j_k}$. Because the $v_j$ form a basis, $v_{i_1}$ can
-be expressed as a linear combination of the $v_j$'s. Indeed,
+By contradiction. Suppose the greedy approach returns vectors $G = 
+\{v_{i_1}, ..., v_{i_k}\}$,
+and suppose there is an optimal solution with better total weight that
+returns vectors
+$O = \{v_{j_1}, ..., v_{j_k}\}$.
 
-$$
-v_{i_1} = \alpha_1v_{j_1} + ... + \alpha_1v_{j_k} 
-$$
+\textbf{Note}: the next part is the start of lecture 10, but I'll put it 
+here for continuity.
 
-Notice some $\alpha_l \neq 0$. We can add $v_{i_1}$ into the set
-$v_{j_1}, ..., v_{j_k}$ and throw out $v_{j_l}$. We claim this is also
-a basis with weight at least as good.
+\begin{remark}
+    Suppose $A$ and $B$ are finite subsets of linearly independent
+    vectors in $\mathbb{R}^d$ and suppose $|A| < |B|$. Then, using
+    the exchange property, there exist some vector $b \in B$ such that
+    $A \cup \{b\}$ is linearly independent. Indeed, there must be a
+    vector in $B$ that lies outside the space spanned by $A$ because
+    of the dimensions of $\langle B \rangle$ and $\langle A \rangle$.
+\end{remark}
+
+Let $v_{i_l}$ be the first vector chosen by the greedy algorithm that
+is not in $O$. Using our remark, we have that 
+$A = \{v_{i_1}, ..., v_{i_l}\}$, and $B = O$.
+
+\begin{itemize}
+    \item Case 1: $l = k$. But then $G$ is at least as good
+    as $O$, which is a contradiction.
+    \item Case 2: $ l < k$, i.e., $|A| < |B|$. Apply our remark.
+    By the exchange property repeatedly, we can keep adding vectors
+    from $B$ to $A$, preserving linear independence of $A$ until
+    $|A| = |B|$. At the end, $A$ has $v_{i_l}$ instead of some
+    vector in $O$ that has weight less than $v_{i_l}$. Therefore,
+    $w(A) \geq w(O)$. Note that even if $w(A) = w(O)$, $A$ agrres more
+    with our greedy solution than $O$, so by induction greedy must be
+    as good as $O$.
+\end{itemize}
+
+\begin{definition}
+    (Hereditary property). If $R \subset S$ and $S$ is a linearly
+    independent set of vectors, then $R$ is also linearly independent.
+\end{definition}
+
+The greedy algorithm for finding a maximum weight basis works because
+vectors have the exchange and hereditary properties.
+
+
+
+
+

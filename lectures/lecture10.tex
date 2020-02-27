@@ -1,3 +1,76 @@
 %!TEX root = ../main.tex
 
-(No video recording, looking for notes for this lecture. Have them? Submit a pull request!)
+Note: Some of Lecture 10 is at the end of Lecture 9's notes for
+continuation.
+
+\section{Matroids}
+
+\begin{definition}
+    A matroid is a pair $(S, I)$ where $S$ is a finite set and 
+    $I$ is some set of subsets of $S$, designated
+        "independent sets", such that
+    \begin{itemize}
+        \item $I$ satisfies the hereditary property. More formally, 
+        if $A \subset B$ and $B \in I$, then $A \in I$.
+        \item $I$ satisfies the exchange property. More formally,
+        if $A, B \in I$ and $|A| < |B|$, then there exists some
+        $x \in B - A$ such that $A \cup \{x\} \in I$.
+    \end{itemize}
+\end{definition}
+
+All maximal independent sets in a matroid have the same size. A greedy
+algorithm is optimal for finding a maximum weight maximum independent
+set in a matroid.
+
+\subsection{Graphic Matroid}
+
+Let $M = (S, I)$ be a matroid. Given a weighted, connected, undirected
+graph $G = (V, E)$ where $S = E$
+\begin{itemize}
+    \item $A \subset S$ is called independent if and only if $A$ is
+    acyclic.
+    \item If $B \in I$ and $A \subset B$, then $A \in I$, and $M$ is
+    hereditary.
+\end{itemize}
+
+\begin{lemma}
+    If $A, B \in I$ and $|A| < |B|$, then there exist $e \in B - A$
+    such that $A \cup \{e\} \in I$.
+\end{lemma}
+
+\begin{proof}
+    The graph on $B$ has $n - |B|$ components, and the graph on
+    $A$ has $n - |A|$ components. Therefore, $n - |A| > n - |B|$.
+    $B$ must contain at least one edge $(u, v)$, where $u$ and
+    $v$ lie in different connected components of the graph formed by
+    $A$. This edge $(u, v)$ can be added to $A$ to get a larger
+    independent set.
+\end{proof}
+
+\subsection{Maximum Weight Minimum Spanning Tree}
+
+Our input is a connected, weighted, undirected graph $G = (V, E)$
+with some weight function $w : E \to \mathbb{R}$. Our goal is to 
+find a maximum weight spanning tree in $G$.
+
+Because this is the problem of finding a maximum weight maximum
+independent set in a graphic matroid, the greedy algorithm (Kruskal's)
+is optimal.
+
+\begin{definition}
+    A cut in a graph is defined by a non-trivial partition
+    $V_1 \cup V_2$ of $V$. The cut $(V_1, V_2)$ is the set of edges
+    that have exactly one endpoint in $V_1$.
+\end{definition}
+
+
+
+
+
+
+
+
+
+
+
+
