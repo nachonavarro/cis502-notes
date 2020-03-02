@@ -6,7 +6,7 @@ We now introduce the master theorem to solve recurrence relations.
 
 
 \begin{theo}[Master Theorem]{theo:theo2}
-Suppose $T(n) \leq aT(\frac{n}{b}) + f(n)$, where $a$ is the number of
+Suppose $T(n) \leq aT(\frac{n}{b}) + n^c$, where $a$ is the number of
 subproblems, each of size $n/b$.
 \begin{itemize}
     \item If $\frac{a}{b^c} < 1$, then $T(n) = O(n^c)$

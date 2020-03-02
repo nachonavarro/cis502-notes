@@ -136,7 +136,8 @@ answers is $n$ because any solution must be some $x_i$, so with
 the above reasoning is the lower bound $\log(n)$? Indeed, \emph{a}
 lower bound is $\log(n)$, but it's simply not that interesting.
 Can we do better? The key question to ask ourselves is when an
-algorithm knows that it has found the median. We know that half of the inputs must be smaller than the median, so the number of possible answers is the number of ways of choosing a median times the number of ways of choosing the half of inputs that are less than the median?
+algorithm knows that it has found the median. We know that half of the
+inputs must be smaller than the median, so the number of possible answers is the number of ways of choosing a median times the number of ways of choosing the half of inputs that are less than the median.
 There are $n$ possibilities for the median and 
 $\binom{n - 1}{\frac{n-1}{2}}$ possibilities for the set of elements
 which are smaller than the median. So the information theoretic
